@@ -637,7 +637,7 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
-      - run: pip install mkwheelhouse sphinx
+      - run: sudo pip install mkwheelhouse sphinx
       - run: S3_DIR=trace-dev rake release:wheel
       - run: S3_DIR=trace-dev rake release:docs
 
@@ -647,9 +647,8 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
-      - run: pip install mkwheelhouse sphinx
+      - run: sudo pip install mkwheelhouse sphinx
       - run: S3_DIR=trace-dev rake release:wheel
-      - run: S3_DIR=trace-dev rake release:docs
 
   deploy_docs:
     # deploy official documentation
@@ -657,7 +656,7 @@ jobs:
       - image: circleci/python:3.6
     steps:
       - checkout
-      - run: pip install mkwheelhouse sphinx
+      - run: sudo pip install mkwheelhouse sphinx
       - run: S3_DIR=trace rake release:docs
 
   wait_all_tests:
@@ -745,9 +744,6 @@ workflows:
             - redis
             - sqlite3
             - msgpack
-          filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
       - deploy_dev:
           requires:
             - wait_all_tests
@@ -765,9 +761,6 @@ workflows:
             - wait_all_tests
           type: approval
           filters:
-            tags:
-              only: /v[0-9]+(\.[0-9]+)*/
-            # By default the job is run for all branches so we need to
-            # explicitely ignore all branches
+            # By default the job is run for all release branches
             branches:
-              ignore: /.*/
+              only: /release-v[0-9]+(\.[0-9]+)*/
