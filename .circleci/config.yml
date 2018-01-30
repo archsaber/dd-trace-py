@@ -759,7 +759,6 @@ workflows:
       - deploy_docs:
           requires:
             - wait_all_tests
-          type: approval
           filters:
             # By default the job is run for all release branches
             branches:
